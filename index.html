@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+/*
+ * file:///Users/chiyeung/Documents/GitHub/web/linearAlgebra/index.html
+ */
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Dot Product (Ecmascript)</title>
+        
+            <LINK REL=StyleSheet HREF="default.css" TYPE="text/css"> 
+            <script src="jquery_1.11.1.js"></script>
+            <script src="Line.js"></script>
+            <script src="Vector.js"></script>
+            <script src="Point.js"></script>
+            <script>
+                
+                $(document).ready(function() {
+                var canvas = document.getElementById("myCanvas");
+                var myContext = canvas.getContext("2d");
+                myContext.strokeStyle = 'black';
+                var threePoints = [new Point(canvas.width/2, 10),
+                    new Point(canvas.width/2, canvas.height/2),
+                    new Point(canvas.width-10, canvas.height/2)
+                ];
+
+                var vector1 = new Vector(threePoints[1], threePoints[0]);
+                var vector2 = new Vector(threePoints[1], threePoints[2]);
+
+                function clear() {
+                    myContext.clearRect(0, 0, canvas.width, canvas.height);
+                }
+
+                function renderLine(p1, p2) {
+                    myContext.beginPath();
+                    myContext.moveTo(p1.x, p1.y);
+                    myContext.lineTo(p2.x, p2.y);
+                    myContext.stroke();
+                }
+
+                function renderLines() {
+                    clear();
+                    renderLine(threePoints[0], threePoints[1]);
+                    renderLine(threePoints[1], threePoints[2]);
+                }
+
+                function findDistance(p1, p2) {
+                    var xx = p1.x - p2.x
+                    var yy = p1.y - p2.y
+                    return Math.sqrt(xx * xx + yy * yy)
+                }
+
+                function findNearestPoint(p) {
+                    var dis0 = findDistance(p, threePoints[0])
+                    var dis1 = findDistance(p, threePoints[1])
+                    var dis2 = findDistance(p, threePoints[2])
+
+                    if(dis0<=dis1&& dis0<=dis2){
+                        return 0
+                    }
+                    else if(dis1<=dis0&& dis1<=dis2){
+                        return 1
+                    }
+                    else {
+                        return 2
+                    }
+                }
+
+                $("#divCanvas").click(function(e) {
+                    var canvasOffset = $(this).offset()
+                    var x = e.pageX - canvasOffset.left;
+                    var y = e.pageY - canvasOffset.top;
+
+                    console.log("Click coordinates:", x, y);
+                    var p = new Point(x,y);
+                    var index = findNearestPoint(p);
+                    threePoints[index] = p;
+                    renderLines();
+                    vector1 = new Vector(threePoints[1], threePoints[0]);
+                    vector2 = new Vector(threePoints[1], threePoints[2]);
+                    
+                    var angle = vector1.findDotProduct(vector2);
+                    $("#angleText").html("angle: "+ (180 - angle));
+                });
+
+                renderLines()
+            });
+            </script>
+    </head>
+
+    <body style="position:relative">
+        <div id="divCanvas">
+            <canvas id="myCanvas" width="700" height="400">
+                HTML5 canvas failed to load.
+            </canvas>
+        </div>
+
+
+        <div id="divControls">
+            <p> Cubic Spline Interpolation demo<br>
+            <p> Click anywhere on canvas (3 points).<br>
+            <br>
+            Reference: <br>
+            (1)<a href="https://www.ncl.ac.uk/webtemplate/ask-assets/external/maths-resources/core-mathematics/vectors/cross-product.html">Cross Product</a><br>
+            <br>
+            (2)<a href="https://www.ncl.ac.uk/webtemplate/ask-assets/external/maths-resources/core-mathematics/vectors/dot-product.html">Dot Product</a><br></p>
+            <br>
+            <p id="angleText"></p>
+        </div>
+    </body>
+</html>
