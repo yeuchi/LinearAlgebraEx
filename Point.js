@@ -1,26 +1,30 @@
 
 class Point
 {
-    constructor(x, y)
+    constructor(x, y, z)
     {
         this._x = x;
         this._y = y;
+        this._z = z;
     }
     
     distanceFromPoint(point)
     {
-        return this.distanceFromXY(point.x, point.y);
+        return this.distanceFrom(point.x, point.y, point.z);
     }
     
-    distanceFromXY(x,y)
+    distanceFrom(x,y, z)
     {
         var xx = this._x - x;
         xx = xx * xx;
         
         var yy = this._y - y;
         yy = yy * yy;
+
+        var zz = this._z - z;
+        zz = zz * zz;
         
-        return Math.sqrt(xx+yy);
+        return Math.sqrt(xx+yy+zz);
     }
     
     get x()
@@ -32,6 +36,11 @@ class Point
     {
         return this._y;
     }
+
+    get z() 
+    {
+        return this._z;
+    }
     
     set x(x)
     {
@@ -41,5 +50,10 @@ class Point
     set y(y)
     {
         this._y = y;
+    }
+
+    set z(z)
+    {
+        this._z = z;
     }
 }
